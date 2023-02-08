@@ -1,5 +1,5 @@
 <template>
-  <v-app>
+  <v-app :theme="store.theme">
     <default-bar />
     <default-drawer />
     <default-view />
@@ -7,7 +7,10 @@
 </template>
 
 <script lang="ts" setup>
-  import DefaultBar from './AppBar.vue'
-  import DefaultView from './View.vue'
-  import DefaultDrawer from './NavigationDrawer.vue'
+import DefaultBar from './AppBar.vue'
+import DefaultView from './View.vue'
+import DefaultDrawer from './NavigationDrawer.vue'
+import { useAppStore } from '@/store/app';
+
+const store = useAppStore()
 </script>
