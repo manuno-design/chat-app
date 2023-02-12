@@ -1,21 +1,32 @@
 {
-    "name": "node",
-    "dockerComposeFile": ["../docker-compose.yml"],
-    "service": "node",
-    "workspaceFolder": "/root/app",
-    "customizations": {
-        "vscode": {
-          "extensions": [
-            "Vue.vscode-typescript-vue-plugin",
-            "Vue.volar",
-            "eamodio.gitlens",
-            "donjayamanne.githistory",
-            "mhutchie.git-graph",
-            "esbenp.prettier-vscode",
-            "MS-CEINTL.vscode-language-pack-ja",
-            "dbaeumer.vscode-eslint",
-            "oderwat.indent-rainbow"
-          ]
+  "dockerComposeFile": "../docker-compose.yml",
+  "service": "node",
+  "workspaceFolder": "/root/app",
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "editor.formatOnSave": true,
+        "[vue]": {
+          "editor.defaultFormatter": "esbenp.prettier-vscode"
+        },
+        "[javascript]": {
+          "editor.defaultFormatter": "esbenp.prettier-vscode"
+        },
+        "[typescript]": {
+          "editor.defaultFormatter": "esbenp.prettier-vscode"
         }
-      }
+      },  
+      "extensions": [
+        "Vue.vscode-typescript-vue-plugin",
+        "Vue.volar",
+        "eamodio.gitlens",
+        "donjayamanne.githistory",
+        "mhutchie.git-graph",
+        "esbenp.prettier-vscode",
+        "MS-CEINTL.vscode-language-pack-ja",
+        "dbaeumer.vscode-eslint",
+        "oderwat.indent-rainbow"
+      ]
+    }
   }
+}
