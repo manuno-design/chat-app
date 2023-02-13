@@ -9,7 +9,7 @@
           :error-messages="errors.password" :type="show ? 'text' : 'password'" label="Password"
           hint="At least 8 characters" counter @click:append="show = !show" />
         <div class="d-flex flex-column">
-          <v-btn color="success" class="mt-4" type="submit">LOGIN</v-btn>
+          <v-btn color="success" class="mt-4" type="submit" :disabled="!meta.valid">LOGIN</v-btn>
           <v-btn class="mt-4" @click="handleReset">CLEAR</v-btn>
         </div>
       </form>
@@ -26,15 +26,15 @@ import * as zod from 'zod'
 const Auth = toFormValidator(
   zod.object({
     email: zod.string()
-      .min(1, { message: 'This is required' })
-      .email({ message: "The email and password you entered don't match" }),
+      .min(1, { message: '必須項目です' })
+      .email({ message: "メールアドレスが不正です" }),
     password: zod.string()
-      .min(8, { message: 'Min 8 characters' })
+      .min(8, { message: '8文字以上入力してください' })
   })
 )
 const show = ref(false)
 
-const { handleSubmit, handleReset, errors } = useForm({
+const { handleSubmit, handleReset, errors, meta } = useForm({
   validationSchema: Auth,
   initialValues: {
     email: '',
