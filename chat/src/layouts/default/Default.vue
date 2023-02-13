@@ -1,5 +1,5 @@
 <template>
-  <v-app :theme="store.theme">
+  <v-app :theme="store.theme" id="default">
     <default-bar />
     <default-drawer />
     <default-view />

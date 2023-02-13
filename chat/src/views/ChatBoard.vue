@@ -52,6 +52,7 @@ const route = useRoute()
 
 const body = ref('')
 const userId = route.query.user_id
+console.log(import.meta.env)
 const messages = ref([] as messageType[])
 const snapshot = await getDocs(collection(db, 'chats'));
 snapshot.forEach(doc => {
