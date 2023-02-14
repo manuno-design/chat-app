@@ -15,19 +15,39 @@
         </template>
         <v-list-item-title>{{ text }}</v-list-item-title>
       </v-list-item>
+      <v-list-item @click="logout">
+        <template v-slot:prepend>
+          <v-icon>mdi-logout</v-icon>
+        </template>
+        <v-list-item-title>Logput</v-list-item-title>
+      </v-list-item>
     </v-list>
   </v-navigation-drawer>
 </template>
 
 <script lang="ts" setup>
 import { useAppStore } from '@/store/app'
+import { auth } from '@/firebase/firebase'
+import { signOut } from '@firebase/auth';
+import router from '@/router';
 
 const store = useAppStore()
 
 const links = [
-  ['mdi-home', 'Home', 'home'],
-  ['mdi-account', 'User', 'user'],
+  ['mdi-home', 'Home', ''],
+  ['mdi-account', 'User', ''],
   ['mdi-delete', 'Trash', ''],
   ['mdi-alert-octagon', 'Spam', ''],
 ]
+
+const logout = () => {
+  signOut(auth)
+    .then(() => {
+      localStorage.message = 'ログアウトしました'
+      router.push('/login')
+    })
+    .catch((error) => {
+      console.log(error)
+    })
+}
 </script>
