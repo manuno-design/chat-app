@@ -61,13 +61,12 @@ const router = createRouter({
 });
 
 router.beforeEach((to) => {
+  const user = auth.currentUser;
   const requiresAuth = to.meta.requiresAuth;
   if (requiresAuth) {
-    onAuthStateChanged(auth, (user) => {
-      if (!user) {
-        router.push('/login');
-      }
-    });
+    if (!user) {
+      return { name: 'Login' };
+    }
   }
 });
 
