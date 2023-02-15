@@ -68,7 +68,16 @@ const { value: password } = useField('password')
 
 const submit = handleSubmit(values => {
   signInWithEmailAndPassword(auth, values.email, values.password)
-    .then(() => {
+    .then((res) => {
+      const authUser = {
+        displayName: res.user.displayName,
+        email: res.user.email,
+        uid: res.user.uid,
+        refreshToken: res.user.refreshToken,
+        photoUrl: res.user.photoURL
+      }
+      sessionStorage.setItem('user', JSON.stringify(authUser))
+
       router.push('/')
     })
     .catch((error) => {

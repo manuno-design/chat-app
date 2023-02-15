@@ -61,7 +61,7 @@ const router = createRouter({
 });
 
 router.beforeEach((to) => {
-  const user = auth.currentUser;
+  const user = sessionStorage.getItem('user');
   const requiresAuth = to.meta.requiresAuth;
   if (requiresAuth) {
     if (!user) {
