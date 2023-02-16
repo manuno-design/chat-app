@@ -39,19 +39,15 @@
 
 <script lang='ts' setup>
 import { ref, computed } from 'vue'
-import { useRoute } from 'vue-router'
 import { db } from '@/firebase/firebase'
-import { collection, addDoc, getDocs } from "firebase/firestore";
+import { collection, getDocs } from "firebase/firestore";
 
 interface messageType {
   user_id?: string,
   message: string
 }
 
-const route = useRoute()
-
 const body = ref('')
-const userId = route.query.user_id
 console.log(import.meta.env)
 const messages = ref([] as messageType[])
 const snapshot = await getDocs(collection(db, 'chats'));

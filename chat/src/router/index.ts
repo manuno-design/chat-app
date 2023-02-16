@@ -19,8 +19,8 @@ const routes = [
       */
       {
         path: '',
-        name: 'User',
-        component: () => import('@/views/UserList.vue'),
+        name: 'Room',
+        component: () => import('@/views/RoomList.vue'),
         meta: { requiresAuth: true },
       },
       {
