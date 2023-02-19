@@ -39,23 +39,27 @@
 
 <script lang='ts' setup>
 import { ref, computed } from 'vue'
+import { useRoute } from 'vue-router';
 import { db } from '@/firebase/firebase'
-import { collection, getDocs } from "firebase/firestore";
+import { getDoc, doc } from "firebase/firestore";
+import router from '@/router/index'
 
 interface messageType {
-  user_id?: string,
+  room_id?: string,
   message: string
 }
 
 const body = ref('')
-console.log(import.meta.env)
+const route = useRoute()
+const roomId = route.query.room_id
 const messages = ref([] as messageType[])
-const snapshot = await getDocs(collection(db, 'chats'));
-snapshot.forEach(doc => {
-  console.log(doc.data())
-  messages.value.push(doc.data() as messageType)
-
-})
+const roomRef = doc(db, 'rooms', `${roomId}`);
+const roomDoc = await getDoc(roomRef);
+console.log(roomDoc)
+if (!roomDoc.data()) {
+  console.log('test')
+  await router.push('/')
+}
 
 const inValid = computed(() => {
   if (!body.value) {

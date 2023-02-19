@@ -3,11 +3,11 @@
     <v-container>
       <CreateRoom />
       <v-row>
-        <v-col v-for="(data, index) in rooms" :key="index" cols="4">
-          <router-link :to="{ path: '/chat', query: { room_id: index } }">
+        <v-col v-for="room in rooms" :key="room.id" cols="4">
+          <router-link :to="{ path: '/chat', query: { room_id: room.id } }">
             <v-avatar color="grey-lighten-2" size="128">
-              <v-icon icon="mdi-account-circle" v-if="!data.thumbnailUrl" />
-              <v-img :src="data.thumbnailUrl" alt="" cover v-if="data.thumbnailUrl" />
+              <v-icon icon="mdi-account-circle" v-if="!room.thumbnailUrl" />
+              <v-img :src="room.thumbnailUrl" alt="" cover v-if="room.thumbnailUrl" />
             </v-avatar>
           </router-link>
         </v-col>
@@ -23,6 +23,7 @@ import { collection, getDocs, Timestamp } from "firebase/firestore";
 import CreateRoom from '@/components/modal/CreateRoom.vue'
 
 interface roomType {
+  id: string,
   name: string,
   thumbnailUrl: string,
   created_at: Timestamp
@@ -36,7 +37,10 @@ const getRooms = async () => {
   rooms.value = []
   const snapshot = await getDocs(collection(db, 'rooms'));
   snapshot.forEach(doc => {
-    rooms.value.push(doc.data() as roomType)
+    const data = { ...doc.data() }
+    data.id = doc.id
+    console.log(data.id)
+    rooms.value.push(data as roomType)
   })
 
 }
