@@ -1,6 +1,7 @@
 <template>
   <v-app id="inspire">
     <v-main>
+      <h1 style="text-align: center;">{{ room ? room.name : '' }}</h1>
       <v-container class="py-8 px-6" fluid>
         <v-row>
           <v-col v-for="card in cards" :key="card" cols="12">
@@ -11,13 +12,14 @@
                 <template v-for="(data, index) in messages" :key="index">
                   <v-list-item>
                     <template v-slot:prepend>
-                      <v-avatar color="grey-darken-1"></v-avatar>
+                      <v-avatar color="grey-darken-1">
+                        <v-img :src="data.photoURL" alt="" cover />
+                      </v-avatar>
                     </template>
                     <v-list-item-subtitle>
                       {{ data.message }}
                     </v-list-item-subtitle>
                   </v-list-item>
-
                   <v-divider v-if="index !== 6" :key="`divider-${index}`" inset></v-divider>
                 </template>
               </v-list>
@@ -38,28 +40,50 @@
 </template>
 
 <script lang='ts' setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router';
 import { db } from '@/firebase/firebase'
-import { getDoc, doc } from "firebase/firestore";
+import { getDoc, getDocs, addDoc, collection, doc, Timestamp, query, orderBy, onSnapshot } from "firebase/firestore";
 import router from '@/router/index'
 
 interface messageType {
-  room_id?: string,
-  message: string
+  message: string,
+  name: string,
+  photoURL: string,
+  createdAt: Timestamp
 }
 
 const body = ref('')
 const route = useRoute()
 const roomId = route.query.room_id
 const messages = ref([] as messageType[])
+const auth = ref()
 const roomRef = doc(db, 'rooms', `${roomId}`);
+const messagesRef = collection(roomRef, 'messages')
+
+onMounted(() => {
+  auth.value = sessionStorage.getItem('user')
+  if (auth.value) {
+    auth.value = JSON.parse(auth.value)
+  }
+  onSnapshot(query(messagesRef, orderBy('createdAt')), (doc) => {
+    doc.docChanges().forEach(change => {
+      messages.value.push(change.doc.data() as messageType)
+    })
+  })
+})
+
 const roomDoc = await getDoc(roomRef);
-console.log(roomDoc)
+const room = roomDoc.data()
 if (!roomDoc.data()) {
   console.log('test')
   await router.push('/')
 }
+
+//const snapshot = await getDocs(query(messagesRef, orderBy('createdAt')))
+//snapshot.forEach(doc => {
+//  messages.value.push(doc.data() as messageType)
+//})
 
 const inValid = computed(() => {
   if (!body.value) {
@@ -70,10 +94,17 @@ const inValid = computed(() => {
 const cards = ['Today']
 
 const submit = () => {
-  messages.value.unshift({
-    message: body.value
+  addDoc(messagesRef, {
+    message: body.value,
+    name: auth.value.displayName,
+    photoURL: auth.value.photoUrl,
+    createdAt: Timestamp.now()
+  }).then(() => {
+    body.value = ''
+  }
+  ).catch((error) => {
+    console.log(error)
   })
-  body.value = ''
 }
 const clear = () => {
   body.value = ''
